@@ -37,3 +37,7 @@ Sistema de monitoramento inteligente para ambientes residenciais focado na segur
 - Node-RED se inscreve nas filas MQTT específicas de cada sensor
 - Processamento centralizado das regras de negócio configuráveis
 - Comandos enviados de volta aos dispositivos via MQTT para ações automatizadas
+
+### Diagrama
+
+![Arquitetura em alto nivel](./high-level-architecture.svg)

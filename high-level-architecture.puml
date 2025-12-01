@@ -1,0 +1,39 @@
+@startuml high-level-architecture
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+System_Ext(mqttBroker, "MQTT Broker", "Corretor de Mensagens", "Gerencia a comunicação entre dispositivos IoT e o servidor.")
+
+Container_Boundary(c1, "Infraestrutura do Servidor") {
+    Container(centralServer, "Servidor Central", "Aplicação Node Red", "Processa e armazena dados dos dispositivos IoT.")
+}
+
+Container_Boundary(c2, "Dispositivos IoT") {
+
+    Container_Boundary(c3, "Sensores de Temperatura") {
+        Container(tempSensor1, "Sensor Temp n", "Dispositivo IoT", "Envia dados de temperatura para o MQTT Broker.")
+    }
+
+    Container_Boundary(c4, "Sensores de Gás") {
+        Container(gasSensor1, "Sensor Gás n", "Dispositivo IoT", "Envia dados de nível de gás para o MQTT Broker.")
+    }   
+
+    Container_Boundary(c5, "Sensores de Luz") {
+        Container(lightSensor1, "Sensor Luz n", "Dispositivo IoT", "Envia dados de intensidade de luz para o MQTT Broker.")
+        Container(presenseSensor1, "Sensor Presença n", "Dispositivo IoT", "Envia dados de presença para o MQTT Broker.")
+    }
+  
+}
+
+Person(admin, "Administrador", "Interage com o sistema para monitoramento e controle.")
+Person(user, "Usuário Final", "Recebe notificações sobre eventos críticos.")
+
+Rel(tempSensor1, mqttBroker, "Publica dados de temperatura via MQTT")
+Rel(gasSensor1, mqttBroker, "Publica dados de nível de gás via MQTT")
+Rel(lightSensor1, mqttBroker, "Publica dados de intensidade de luz via MQTT")
+Rel(presenseSensor1, mqttBroker, "Publica dados de presença via MQTT")
+Rel(mqttBroker, centralServer, "Subscreve dados dos sensores via MQTT")
+Rel_Right(admin, centralServer, "Acessa dados e monitoramento via interface web")
+Rel_Right(centralServer, user, "Envia notificações sobre eventos críticos")
+
+@enduml
