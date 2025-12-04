@@ -38,6 +38,29 @@ Sistema de monitoramento inteligente para ambientes residenciais focado na segur
 - Processamento centralizado das regras de negócio configuráveis
 - Comandos enviados de volta aos dispositivos via MQTT para ações automatizadas
 
+
 ### Diagrama
 
 ![Arquitetura em alto nivel](./high-level-architecture.svg)
+
+
+## Rodando o projeto
+
+### Node-RED
+É necessário que o Node-RED seja inicializado com os flows configurados para cada unidade de medida captada e com as dependências necessárias.
+
+O servidor do Node-RED pode ser inicializado de duas maneiras:
+
+Utilizando Docker:
+```sh
+docker compose up nodered -d
+```
+Utilizando npm com o script criado:
+```sh
+chmod +x ./setup-node-red.sh
+./setup-node-red.sh
+```
+
+- `http://localhost:1800/ui` - acesso aos dashboards com as informações atuais de gás, temperatura e iluminação.
+- `http://localhost:1880` - acesso aos flows que captam os dados e disponibilizam no dashboard
+
