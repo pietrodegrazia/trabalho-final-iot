@@ -20,8 +20,6 @@ services:
     container_name: gb-nodered
     ports:
       - "1880:1880"
-    environment:
-      - MQTT_BROKER=mosquitto
     volumes:
       - node_red_data:/data
       - ./flows.json:/data/flows.json
