@@ -46,21 +46,67 @@ Sistema de monitoramento inteligente para ambientes residenciais focado na segur
 
 ## Rodando o projeto
 
+### Docker (Recomendado)
+
+A forma mais simples de rodar todo o projeto é usando Docker Compose, que inicializa tanto o MQTT Broker quanto o Node-RED:
+
+```sh
+docker compose up -d
+```
+
+Isso irá iniciar:
+- **Mosquitto MQTT Broker** na porta `1883`
+- **Node-RED** na porta `1880`
+
+### MQTT Broker (Mosquitto)
+
+O projeto utiliza o Eclipse Mosquitto como broker MQTT local, rodando em Docker.
+
+**Configuração:**
+- Host: `localhost` (ou `mosquitto` para comunicação entre containers)
+- Porta: `1883`
+- Autenticação: Desabilitada (anonymous access permitido)
+
+**Tópicos MQTT utilizados:**
+| Tópico | Descrição |
+|--------|-----------|
+| `esp32/temperature` | Dados de temperatura e umidade |
+| `esp32/gas-leak` | Dados de detecção de vazamento de gás |
+| `esp32/lighting` | Dados de iluminação e presença |
+
+**Testando o broker:**
+```sh
+# Publicar mensagem de teste (requer mosquitto-clients)
+mosquitto_pub -h localhost -t "esp32/temperature" -m '{"temp": 25, "umid": 60}'
+
+# Assinar tópico para ver mensagens
+mosquitto_sub -h localhost -t "esp32/#" -v
+```
+
 ### Node-RED
+
 É necessário que o Node-RED seja inicializado com os flows configurados para cada unidade de medida captada e com as dependências necessárias.
 
 O servidor do Node-RED pode ser inicializado de duas maneiras:
 
-Utilizando Docker:
+Utilizando Docker (junto com o broker MQTT):
 ```sh
-docker compose up nodered -d
+docker compose up -d
 ```
-Utilizando npm com o script criado:
+
+Utilizando npm com o script criado (requer broker MQTT externo):
 ```sh
 chmod +x ./setup-node-red.sh
 ./setup-node-red.sh
 ```
 
-- `http://localhost:1800/ui` - acesso aos dashboards com as informações atuais de gás, temperatura e iluminação.
+**URLs de acesso:**
+- `http://localhost:1880/ui` - acesso aos dashboards com as informações atuais de gás, temperatura e iluminação.
 - `http://localhost:1880` - acesso aos flows que captam os dados e disponibilizam no dashboard
+
+### Configuração do ESP32
+
+Para conectar os sensores ESP32 ao broker MQTT local, configure:
+- **Broker Host:** IP da máquina rodando o Docker (ex: `192.168.x.x`)
+- **Porta:** `1883`
 

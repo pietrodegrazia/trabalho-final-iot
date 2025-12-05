@@ -1,7 +1,17 @@
-# docker compose up nodered -d
-version: "3.9"
-
+# docker compose up -d
 services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: gb-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    restart: unless-stopped
+
   nodered:
     build:
       context: .
@@ -12,6 +22,8 @@ services:
     volumes:
       - node_red_data:/data
       - ./flows.json:/data/flows.json
+    depends_on:
+      - mosquitto
     restart: unless-stopped
 
 volumes:
